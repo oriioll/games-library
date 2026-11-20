@@ -27,7 +27,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<
 const hue = (s) => HUES[[...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) % HUES.length]
 const im = (u, w) => `<img loading="lazy" src="${u.replace('/media/', `/media/resize/${w}/-/`)}" data-u="${u}" onerror="this.onerror=null;this.src=this.dataset.u" alt="">`
 const cover = (c, st) =>
-  `<div class="cover" style="--h:${hue(c.t)}">${c.img ? `<img loading="lazy" src="${im(c.img, 420)}" alt="">` : `<div class="ct">${esc(c.t)}</div>`}${st ? `<div class="st">${ico(ST[st][1])}</div>` : ''}</div>`
+  `<div class="cover" style="--h:${hue(c.t)}">${c.img ? im(c.img, 420) : `<div class="ct">${esc(c.t)}</div>`}${st ? `<div class="st">${ico(ST[st][1])}</div>` : ''}</div>`
 
 function save(g) {
   clearTimeout(g._t)
@@ -51,7 +51,7 @@ function render() {
   document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.t === tab))
   let h = ''
   if (tab === 'lib') {
-    if (pl.length) h += `<div class="feats">${pl.map((g) => `<button class="feat" data-o="${g.id}" style="--h:${hue(g.c.t)}">${g.c.img ? `<img src="${im(g.c.img, 1280)}" alt="">` : ''}<div><em>Jugando</em><h3>${esc(g.c.t)}</h3><p>${esc([g.c.s, g.c.g].filter(Boolean).join(' · '))}</p></div></button>`).join('')}</div>`
+    if (pl.length) h += `<div class="feats">${pl.map((g) => `<button class="feat" data-o="${g.id}" style="--h:${hue(g.c.t)}">${g.c.img ? im(g.c.img, 1280) : ''}<div><em>Jugando</em><h3>${esc(g.c.t)}</h3><p>${esc([g.c.s, g.c.g].filter(Boolean).join(' · '))}</p></div></button>`).join('')}</div>`
     h += '<div class="chips">' + FILTERS.map(([k, l]) => `<button class="chip${flt === k ? ' on' : ''}" data-f="${k}">${l}<span>${k === 'all' ? lib.length : lib.filter((g) => g.st === k).length}</span></button>`).join('') + '</div>'
     const L = lib.filter((g) => flt === 'all' || g.st === flt)
     h += L.length
@@ -74,7 +74,7 @@ const closeM = () => {
 
 function openDetail(id) {
   const g = lib.find((x) => x.id === id), c = g.c, m = $('#modal')
-  m.innerHTML = `<div class="ov"><div class="sheet"><div class="hero" style="--h:${hue(c.t)}">${c.img ? `<img src="${im(c.img, 1280)}" alt="">` : ''}<button class="ib" data-x aria-label="Cerrar">${ico('x')}</button><div><h3>${esc(c.t)}</h3><p>${esc([c.s, c.y, c.g].filter(Boolean).join(' · '))}</p></div></div><div class="body">
+  m.innerHTML = `<div class="ov"><div class="sheet"><div class="hero" style="--h:${hue(c.t)}">${c.img ? im(c.img, 1280) : ''}<button class="ib" data-x aria-label="Cerrar">${ico('x')}</button><div><h3>${esc(c.t)}</h3><p>${esc([c.s, c.y, c.g].filter(Boolean).join(' · '))}</p></div></div><div class="body">
 ${c.shots?.length ? `<div class="shots">${c.shots.map((s) => `<img loading="lazy" src="${s}" alt="">`).join('')}</div>` : ''}
 <div><span class="lbl">Estado</span><div class="seg">${Object.keys(ST).map((k) => `<button data-s="${k}" style="--sc:${ST[k][2]}" class="${g.st === k ? 'on' : ''}">${ico(ST[k][1])}${ST[k][0]}</button>`).join('')}</div></div>
 <div><span class="lbl">Tu nota</span><div class="stars">${[1, 2, 3, 4, 5].map((n) => `<button data-r="${n}" class="${g.r >= n ? 'on' : ''}" aria-label="${n} de 5">${STAR}</button>`).join('')}</div></div>
